@@ -1,0 +1,53 @@
+{
+  "spec": "athar-receipt/0.1",
+  "subject_commitment": "05c91952402b311f13fa2d5022eeddc7e3dc51375bd4935a8c6a49f9954be2c9",
+  "purpose": "kyc_verification",
+  "period": "6c5c3b67",
+  "scope_hash": "sha256:a9b0dc7d75981979df3e109d0b35ba4c3eec436a3a3d14ee8ae3125b140b20bf",
+  "policy_hash": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+  "assurance_level": 2,
+  "key_destruction": "SIMULATED",
+  "fact": {
+    "fact_id": "00000000-0000-4000-8000-000000000001",
+    "ts": "2026-10-13T12:00:00+00:00",
+    "nonce": "2222222222222222222222222222222222222222222222222222222222222222",
+    "surfaces_purged": 4,
+    "retrieval_test_outcome": "PASSED",
+    "event_type": "erasure"
+  },
+  "inclusion_proof": {
+    "batch_id": "6c5c3b67-7148-45e8-bf7f-75a399a25f0c",
+    "leaf_index": 0,
+    "tree_size": 1,
+    "path": []
+  },
+  "merkle_root": "sha256:77450ef088a6ddc400038194c290560dca8765aaa7a1d4c91b9f7cc73ff1a0f7",
+  "timestamp_token": {
+    "token_type": "simulated",
+    "token_data_hex": "d77159b42a6d832d56842445ef732d6b45ef0749ea51ca932b8c9179a14682fc76b41f040f8fa7b818f9c693b822a51e65a377f40f9383ce48c48229f849380b323032362d31302d31355430363a31353a32352e3030373932352b30303a30307c77450ef088a6ddc400038194c290560dca8765aaa7a1d4c91b9f7cc73ff1a0f7",
+    "timestamp": "2026-10-15T06:15:25.007925+00:00",
+    "honesty_level": "simulated",
+    "digest_hex": "77450ef088a6ddc400038194c290560dca8765aaa7a1d4c91b9f7cc73ff1a0f7",
+    "token_id": "1a097c10-2e77-4b9b-accf-739b91eef472"
+  },
+  "retrieval_test": {
+    "date": "2026-10-13",
+    "surfaces": 4,
+    "outcome": "not_recoverable"
+  },
+  "limits": [
+    "Does not prove absence of copies outside the manifest.",
+    "Key destruction is SIMULATED in this MVP.",
+    "Self-run retrieval test does not raise assurance level.",
+    "Timestamp anchor honesty depends on the external TSA.",
+    "Detection time is the company's claim unless independently verified."
+  ],
+  "signatures": [
+    {
+      "alg": "Ed25519",
+      "kid": "sample-test-key",
+      "pub": "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a",
+      "sig": "47c2cdd50a20e70ec454a57ad5fb84e99bdfc1d788ca87a4b95fa6e98b24241f60ba25e6e1e9262ececcaf40e89c921d2f97dbc75f31cd09f1a7f589bb317f06"
+    }
+  ]
+}

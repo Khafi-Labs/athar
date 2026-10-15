@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Athar: Verifiable Erasure Receipts (reference implementation)"
+version: 0.1.0
+type: software
+license: Apache-2.0
+authors:
+  - name: "Khafi Labs (My Personal Laboratories)"
+abstract: "Alpha research prototype for tamper-evident, independently verifiable data-erasure receipts."

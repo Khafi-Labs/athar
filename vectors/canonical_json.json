@@ -1,0 +1,126 @@
+[
+  {
+    "description": "Empty object",
+    "input": {},
+    "expected_canonical": "{}",
+    "expected_hash_hex": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+  },
+  {
+    "description": "Empty array",
+    "input": [],
+    "expected_canonical": "[]",
+    "expected_hash_hex": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+  },
+  {
+    "description": "Null value",
+    "input": null,
+    "expected_canonical": "null",
+    "expected_hash_hex": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+  },
+  {
+    "description": "Boolean true",
+    "input": true,
+    "expected_canonical": "true",
+    "expected_hash_hex": "b5bea41b6c623f7c09f1bf24dcae58ebab3c0cdd90ad966bc43a45b44867e12b"
+  },
+  {
+    "description": "Boolean false",
+    "input": false,
+    "expected_canonical": "false",
+    "expected_hash_hex": "fcbcf165908dd18a9e49f7ff27810176db8e9f63b4352213741664245224f8aa"
+  },
+  {
+    "description": "Integer zero",
+    "input": 0,
+    "expected_canonical": "0",
+    "expected_hash_hex": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9"
+  },
+  {
+    "description": "Positive integer",
+    "input": 42,
+    "expected_canonical": "42",
+    "expected_hash_hex": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049"
+  },
+  {
+    "description": "Negative integer",
+    "input": -17,
+    "expected_canonical": "-17",
+    "expected_hash_hex": "d3471dcc109cd382f5e09a64253c2219958b5f8f07371fba48ac81fed97bb18a"
+  },
+  {
+    "description": "Simple string",
+    "input": "hello",
+    "expected_canonical": "\"hello\"",
+    "expected_hash_hex": "5aa762ae383fbb727af3c7a36d4940a5b8c40a989452d2304fc958ff3f354e7a"
+  },
+  {
+    "description": "Unicode string",
+    "input": "café ☕",
+    "expected_canonical": "\"café ☕\"",
+    "expected_hash_hex": "f2314ceef1dcdfbc6a679f984f7b89ac5a7f6d91364ff89f03756a03febebb0b"
+  },
+  {
+    "description": "String with escapes",
+    "input": "line1\nline2\ttab",
+    "expected_canonical": "\"line1\\nline2\\ttab\"",
+    "expected_hash_hex": "a3d260b7df4ab27fb58ac3cf2e0f55ca6ea5a4184e261ea71689be14f367ad21"
+  },
+  {
+    "description": "Nested unsorted keys",
+    "input": {
+      "z": 1,
+      "a": {
+        "y": 2,
+        "b": 3
+      }
+    },
+    "expected_canonical": "{\"a\":{\"b\":3,\"y\":2},\"z\":1}",
+    "expected_hash_hex": "10d6b907e50339871355376854e16e87112120f63b9ce9bca2913907cd2a124d"
+  },
+  {
+    "description": "Array of mixed types",
+    "input": [
+      1,
+      "two",
+      true,
+      null,
+      {
+        "k": "v"
+      }
+    ],
+    "expected_canonical": "[1,\"two\",true,null,{\"k\":\"v\"}]",
+    "expected_hash_hex": "ecb97e20cb3047c7c6aa7f58a8ccc31c1efb6c565a5c2e4fc62524571f37ed6b"
+  },
+  {
+    "description": "Deeply nested structure",
+    "input": {
+      "outer": {
+        "middle": {
+          "inner": [
+            1,
+            2,
+            3
+          ]
+        },
+        "sibling": "val"
+      }
+    },
+    "expected_canonical": "{\"outer\":{\"middle\":{\"inner\":[1,2,3]},\"sibling\":\"val\"}}",
+    "expected_hash_hex": "262ac5765188846e2794f04a6837806a21312f614b65617c20c05ed388e73edb"
+  },
+  {
+    "description": "Receipt-like object",
+    "input": {
+      "spec": "athar-receipt/0.1",
+      "purpose": "kyc",
+      "assurance_level": 2,
+      "key_destruction": "SIMULATED",
+      "limits": [
+        "limit1",
+        "limit2"
+      ]
+    },
+    "expected_canonical": "{\"assurance_level\":2,\"key_destruction\":\"SIMULATED\",\"limits\":[\"limit1\",\"limit2\"],\"purpose\":\"kyc\",\"spec\":\"athar-receipt/0.1\"}",
+    "expected_hash_hex": "a6083b52f364c0c803024245904b652f20e4095cf7f1b2d55d43c3030065e053"
+  }
+]
