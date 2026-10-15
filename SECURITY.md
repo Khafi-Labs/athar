@@ -6,7 +6,7 @@ Athar is an **alpha research prototype and has not been independently audited**.
 
 Please report privately; do not open a public issue.
 
-- Contact: **TODO(maintainers): add a monitored security contact address before publishing.**
+- Use GitHub's private vulnerability reporting: open the **Security** tab of this repository and choose **Report a vulnerability** (https://github.com/Khafi-Labs/athar/security/advisories/new). Only the maintainers can see the report.
 - Include: affected version, a minimal reproduction, and the impact you see.
 - We aim to acknowledge reports within 7 days. This is a best-effort project run by a small lab; there is no bug bounty.
 

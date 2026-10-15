@@ -2,6 +2,8 @@
 
 *A research project of **Khafi Labs** (My Personal Laboratories). Alpha research prototype, Apache-2.0.*
 
+Repository: https://github.com/Khafi-Labs/athar
+
 **Athar** is a reference implementation for generating, anchoring, and independently verifying cryptographic receipts for data erasure workflows under privacy regulations. The current policy model follows GDPR (Article 17) concepts; Egyptian law (PDPL 151/2020, CBE rules) is not yet modelled.
 
 ---
