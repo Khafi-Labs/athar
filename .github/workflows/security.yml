@@ -1,0 +1,29 @@
+# Dependency vulnerability audit. Runs weekly and whenever dependencies change,
+# because new advisories appear without any code change.
+name: Security audit
+
+on:
+  schedule:
+    - cron: "17 5 * * 1"
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["pyproject.toml"]
+  pull_request:
+    paths: ["pyproject.toml"]
+
+permissions:
+  contents: read
+
+jobs:
+  pip-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - run: python -m pip install --upgrade pip pip-audit
+      - run: pip install .
+      - name: Audit installed dependencies
+        run: pip-audit --skip-editable

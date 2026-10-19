@@ -229,7 +229,9 @@ class SubjectStore:
             return False
 
         params.append(pseudonym)
-        sql = f"UPDATE subjects SET {', '.join(updates)} WHERE pseudonym = ?"
+        # nosec B608 - the SET clause is built only from the fixed fragments above;
+        # every value is bound as a parameter.
+        sql = f"UPDATE subjects SET {', '.join(updates)} WHERE pseudonym = ?"  # nosec B608
         cursor = self._conn.cursor()
         cursor.execute(sql, tuple(params))
         self._conn.commit()

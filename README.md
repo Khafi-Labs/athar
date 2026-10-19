@@ -4,6 +4,8 @@
 
 Repository: https://github.com/Khafi-Labs/athar
 
+[![CI](https://github.com/Khafi-Labs/athar/actions/workflows/ci.yml/badge.svg)](https://github.com/Khafi-Labs/athar/actions/workflows/ci.yml) [![Security audit](https://github.com/Khafi-Labs/athar/actions/workflows/security.yml/badge.svg)](https://github.com/Khafi-Labs/athar/actions/workflows/security.yml) [![CodeQL](https://github.com/Khafi-Labs/athar/actions/workflows/codeql.yml/badge.svg)](https://github.com/Khafi-Labs/athar/actions/workflows/codeql.yml)
+
 **Athar** is a reference implementation for generating, anchoring, and independently verifying cryptographic receipts for data erasure workflows under privacy regulations. The current policy model follows GDPR (Article 17) concepts; Egyptian law (PDPL 151/2020, CBE rules) is not yet modelled.
 
 ---
