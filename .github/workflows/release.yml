@@ -1,0 +1,63 @@
+# Builds the sdist and wheel for every v* tag and publishes a GitHub
+# pre-release with an SPDX SBOM, checksums and a signed build-provenance
+# attestation. Run it by hand (workflow_dispatch) to rehearse without publishing.
+# It does not upload to PyPI.
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - name: Tag must match the package version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          version=$(sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -1)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "tag $GITHUB_REF_NAME does not match pyproject version $version"; exit 1
+          fi
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check dist/*
+      - name: SBOM and checksums
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api "repos/${GITHUB_REPOSITORY}/dependency-graph/sbom" --jq '.sbom' > dist/athar.spdx.json
+          test -s dist/athar.spdx.json
+          (cd dist && sha256sum -- * > SHA256SUMS)
+          ls -l dist
+      - uses: actions/attest-build-provenance@96278af6caaf10aea03fd8d33a09a777ca52d62f # v3.2.0
+        with:
+          subject-path: dist/*
+      - name: Publish pre-release
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cat > notes.md <<'NOTES'
+          Alpha research prototype. Not a compliance product, not legal advice, not
+          independently audited; key destruction is simulated. See docs/limits_of_the_claim.md.
+
+          Verify a download: `gh attestation verify <file> --repo Khafi-Labs/athar`
+          NOTES
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Athar $GITHUB_REF_NAME" \
+            --notes-file notes.md \
+            --generate-notes \
+            --prerelease

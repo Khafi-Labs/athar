@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this software, please cite it as below."
 title: "Athar: Verifiable Erasure Receipts (reference implementation)"
-version: 0.2.0
+version: 0.2.1
 type: software
 repository-code: "https://github.com/Khafi-Labs/athar"
 url: "https://github.com/Khafi-Labs/athar"

@@ -19,3 +19,7 @@ Please report privately; do not open a public issue.
 ## Known limitations (not vulnerabilities)
 
 See `docs/limits_of_the_claim.md` and `docs/threat_model.md`. In particular: no persistent or HSM-backed keystore, simulated timestamp anchoring by default, and no protection against copies outside the declared scope.
+
+## Automated checks
+
+Every change runs ruff, strict mypy, the test suite (Python 3.11 to 3.13, 80% coverage floor), bandit, a package build and CodeQL. Dependencies are audited weekly with `pip-audit`, new vulnerable dependencies are blocked in pull requests, and Dependabot proposes updates. Releases carry an SBOM and a signed build-provenance attestation. None of this replaces an independent security review, which has not happened.

@@ -19,7 +19,7 @@ None of these primitives is new. The contribution is their combination, the fail
 stating limits inside every receipt.
 
 ## 3. What has been tested
-162 automated tests: unit, property-based (Merkle), failure injection (saga crashes/connector failures) and
+236 automated tests (83% line coverage): unit, property-based (Merkle), failure injection (saga crashes/connector failures) and
 attack tests (tampering, forged receipts with attacker keys, bad Merkle paths, missing timestamps). Linting and strict type checking pass.
 Not done: independent audit, formal proof, performance evaluation, real-deployment pilot.
 

@@ -7,6 +7,7 @@ key destruction.
 
 from __future__ import annotations
 
+import re
 import sqlite3
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
@@ -103,6 +104,21 @@ class PurgeConnector(ABC):
         raise NotImplementedError
 
 
+_SQL_IDENTIFIER = re.compile(r"[A-Za-z_][A-Za-z0-9_]{0,63}")
+
+
+def _validate_identifier(kind: str, value: str) -> str:
+    """Accept only plain SQL identifiers (letters, digits, underscore).
+
+    Table and column names are placed into SQL text because identifiers cannot
+    be bound as parameters. Restricting them to a strict pattern keeps a bad or
+    hostile configuration from changing which rows a purge deletes.
+    """
+    if not isinstance(value, str) or _SQL_IDENTIFIER.fullmatch(value) is None:
+        raise ValueError(f"invalid SQL identifier for {kind}: {value!r}")
+    return value
+
+
 class DatabaseConnector(PurgeConnector):
     """Connector for purging records from relational databases (SQLite backed)."""
 
@@ -128,9 +144,9 @@ class DatabaseConnector(PurgeConnector):
         """
         self.surface_name = surface_name
         self.surface_type = "relational_db"
-        self.table_name = table_name
-        self.subject_column = subject_column
-        self.purpose_column = purpose_column
+        self.table_name = _validate_identifier("table_name", table_name)
+        self.subject_column = _validate_identifier("subject_column", subject_column)
+        self.purpose_column = _validate_identifier("purpose_column", purpose_column)
 
         if connection is not None:
             self._conn = connection
@@ -184,12 +200,14 @@ class DatabaseConnector(PurgeConnector):
         """Purge matching database records."""
         try:
             with self._conn:
+                # Identifiers are validated in __init__; values are bound parameters.
+                delete_sql = (
+                    f"DELETE FROM {self.table_name} "  # nosec B608
+                    f"WHERE {self.subject_column} = ? "
+                    f"AND ({self.purpose_column} = ? OR {self.purpose_column} IS NULL OR ? = '*')"
+                )
                 cursor = self._conn.execute(
-                    f"""
-                    DELETE FROM {self.table_name}
-                    WHERE {self.subject_column} = ?
-                      AND ({self.purpose_column} = ? OR {self.purpose_column} IS NULL OR ? = '*')
-                    """,
+                    delete_sql,
                     (subject_pseudonym, purpose, purpose),
                 )
                 rows_affected = cursor.rowcount
@@ -215,7 +233,7 @@ class DatabaseConnector(PurgeConnector):
     def scan_for_remnants(self, subject_pseudonym: str) -> list[str]:
         """Canary scan for remaining records matching the subject pseudonym."""
         cursor = self._conn.execute(
-            f"SELECT id FROM {self.table_name} WHERE {self.subject_column} = ?",
+            f"SELECT id FROM {self.table_name} WHERE {self.subject_column} = ?",  # nosec B608 - identifiers validated in __init__
             (subject_pseudonym,),
         )
         return [row[0] for row in cursor.fetchall()]

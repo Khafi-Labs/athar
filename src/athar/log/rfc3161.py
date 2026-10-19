@@ -350,9 +350,11 @@ def _extract_tst_info_der(token_data: bytes) -> tuple[bytes, bytes | None, bytes
     Returns:
         (tst_info_bytes, signer_certificate, signature)
     """
-    tag, content, _ = der_read_tlv(token_data)
+    tag, content, end = der_read_tlv(token_data)
     if tag != 0x30:
         raise ValueError(f"Expected outer SEQUENCE (0x30), got {hex(tag)}")
+    if end != len(token_data):
+        raise ValueError("Trailing bytes after the DER token")
 
     # ContentInfo: contentType OID, content [0]
     sub_tag, ct_bytes, offset = der_read_tlv(content, 0)
@@ -530,7 +532,8 @@ def verify_timestamp_token(
     - Message imprint hashedMessage matches digest.
     - Algorithm is SHA-256 (2.16.840.1.101.3.4.2.1).
     - Version is 1.
-    - If trusted_certs provided, certificate chain verification is documented.
+    - Does NOT verify the TSA signature or certificate chain. Passing
+      ``trusted_certs`` raises NotImplementedError instead of returning True.
 
     Args:
         token_info: Extracted TimestampTokenInfo.
@@ -538,7 +541,8 @@ def verify_timestamp_token(
         trusted_certs: Optional list of DER-encoded trusted CA certificates.
 
     Returns:
-        True if the token is valid for this digest, False otherwise.
+        True if the message imprint, version and algorithm match the digest,
+        False otherwise. This is not proof that a TSA issued the token.
     """
     if token_info.version != 1:
         return False
@@ -549,9 +553,13 @@ def verify_timestamp_token(
     if token_info.hash_algorithm_oid != OID_SHA256:
         return False
 
-    # In MVP, signature verification against external TSAs is documented but not enforced
-    if trusted_certs is not None and token_info.signer_certificate is not None:
-        # Trust chain anchor check stub for production TSA verification
-        pass
+    # The TSA's signature and certificate chain are NOT verified by this module.
+    # Callers that ask for trust verification must not be told "valid" anyway,
+    # so fail closed rather than silently skipping the check.
+    if trusted_certs is not None:
+        raise NotImplementedError(
+            "RFC 3161 signature and trust-chain verification is not implemented; "
+            "this function only checks the message imprint, version and algorithm."
+        )
 
     return True

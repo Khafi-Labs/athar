@@ -1,8 +1,17 @@
 name: CI
+
 on:
   push:
     branches: [main]
   pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -11,14 +20,45 @@ jobs:
       matrix:
         python-version: ["3.11", "3.12", "3.13"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
         with:
           python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
       - run: pip install -e ".[dev]"
       - run: ruff check .
       - run: ruff format --check .
       - run: mypy src
-      - run: pytest --cov=athar --cov-report=term-missing
+      - run: pytest --cov=athar --cov-report=term-missing --cov-fail-under=80
       - name: End-to-end demo
         run: python -m demo.quickfin > /dev/null
+
+  bandit:
+    name: bandit (static security analysis)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - run: pip install bandit
+      - name: Fail on medium or high findings
+        run: bandit -r src -ll
+
+  package:
+    name: build and install the package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: "3.13"
+      - run: pip install build twine
+      - run: python -m build
+      - run: twine check dist/*
+      - name: Install the wheel into a clean environment and run the CLI
+        run: |
+          python -m venv /tmp/clean
+          /tmp/clean/bin/pip install dist/*.whl
+          /tmp/clean/bin/athar --help
